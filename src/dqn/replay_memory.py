@@ -2,7 +2,7 @@ from random import sample
 import torch
 import numpy as np
 
-from src.dqn.constants import MEMORY_CAPACITY, BATCH_SIZE
+from src.dqn.constants import MEMORY_CAPACITY, BATCH_SIZE, DEVICE
 
 
 class ReplayMemory:
@@ -31,13 +31,13 @@ class ReplayMemory:
 
         self.index = (self.index + 1) % self.capacity
 
-    def sample(self, device):
+    def sample(self):
         indices_to_sample = sample(range(len(self)), BATCH_SIZE)
-        states = torch.from_numpy(np.array(self.states)[indices_to_sample]).float().to(device)
-        actions = torch.from_numpy(np.array(self.actions)[indices_to_sample]).to(device).reshape((-1, 1))
-        rewards = torch.from_numpy(np.array(self.rewards)[indices_to_sample]).float().to(device).reshape((-1, 1))
-        dones = torch.from_numpy(np.array(self.dones)[indices_to_sample]).to(device).reshape((-1, 1))
-        next_states = torch.from_numpy(np.array(self.next_states)[indices_to_sample]).float().to(device)
+        states = torch.from_numpy(np.array(self.states)[indices_to_sample]).float().to(DEVICE)
+        actions = torch.from_numpy(np.array(self.actions)[indices_to_sample]).to(DEVICE).reshape((-1, 1))
+        rewards = torch.from_numpy(np.array(self.rewards)[indices_to_sample]).float().to(DEVICE).reshape((-1, 1))
+        dones = torch.from_numpy(np.array(self.dones)[indices_to_sample]).to(DEVICE).reshape((-1, 1))
+        next_states = torch.from_numpy(np.array(self.next_states)[indices_to_sample]).float().to(DEVICE)
 
         return states, actions, rewards, dones, next_states
 

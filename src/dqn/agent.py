@@ -23,17 +23,11 @@ from src.utils.helpers import check_if_dirs_exist
 class Agent:
     def __init__(self, action_space):
         self.action_space = action_space
-        self.gamma: float = GAMMA
-        self.device = DEVICE
-
         self.epsilon: float = EPSILON_MAX
-        self.epsilon_min: float = EPSILON_MIN
-        self.epsilon_decay: float = EPSILON_DECAY
-
         self.replay_memory: ReplayMemory = ReplayMemory()
 
-        self.policy_net: DQN = DQN().to(self.device)
-        self.target_net: DQN = DQN().to(self.device)
+        self.policy_net: DQN = DQN().to(DEVICE)
+        self.target_net: DQN = DQN().to(DEVICE)
         self.update_target_net()
 
     def update_target_net(self):
@@ -44,7 +38,7 @@ class Agent:
             return self.action_space.sample()
 
         if not torch.is_tensor(state):
-            state = torch.from_numpy(np.array(state)).float().unsqueeze(0).to(self.device)
+            state = torch.from_numpy(np.array(state)).float().unsqueeze(0).to(DEVICE)
 
         with torch.no_grad():
             action = torch.argmax(self.policy_net(state))
@@ -52,19 +46,19 @@ class Agent:
         return action.item()
 
     def decay_epsilon(self):
-        self.epsilon = max(self.epsilon * self.epsilon_decay, self.epsilon_min)
+        self.epsilon = max(self.epsilon * EPSILON_DECAY, EPSILON_MIN)
 
     def please_learn(self):
         if len(self.replay_memory) < BATCH_SIZE:
             return
 
-        states, actions, rewards, dones, next_states = self.replay_memory.sample(self.device)
+        states, actions, rewards, dones, next_states = self.replay_memory.sample()
 
         predicted_qs = self.policy_net(states).gather(1, actions)
         target_qs = self.target_net(next_states)
         target_qs = torch.max(target_qs, dim=1).values.reshape(-1, 1)
         target_qs[dones] = 0.0
-        target_qs = rewards + (self.gamma * target_qs)
+        target_qs = rewards + (GAMMA * target_qs)
 
         loss = self.policy_net.loss(predicted_qs, target_qs)
         self.policy_net.optimizer.zero_grad()
