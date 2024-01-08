@@ -60,7 +60,7 @@ class Agent:
 
         states, actions, rewards, dones, next_states = self.replay_memory.sample(self.device)
 
-        predicted_qs = self.policy_net(states)
+        predicted_qs = self.policy_net(states).gather(1, actions)
         target_qs = self.target_net(next_states)
         target_qs = torch.max(target_qs, dim=1).values.reshape(-1, 1)
         target_qs[dones] = 0.0
