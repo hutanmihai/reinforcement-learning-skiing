@@ -8,7 +8,7 @@ INPUT_SHAPE = (1, 80, 80)  # PyTorch uses (channels, height, width) format
 
 # TODO: Fine tuning
 LEARNING_RATE = 1e-2
-MEMORY_CAPACITY = 32
+MEMORY_CAPACITY = 10_000
 NUM_EPISODES = 10
 BATCH_SIZE = 16
 UPDATE_FREQUENCY = 20

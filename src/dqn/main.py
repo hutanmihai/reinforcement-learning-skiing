@@ -20,8 +20,10 @@ def step(env: Env, action: int):
     return next_state, reward, done, info
 
 
-def fill_memory(env: Env, agent: Agent):
-    for _ in range(MEMORY_CAPACITY):
+def init_memory(env: Env, agent: Agent):
+    # we use BATCH_SIZE because we need at least BATCH_SIZE samples to start learning,
+    # no need to wait for MEMORY_CAPACITY to fill all the way
+    for _ in range(BATCH_SIZE):
         state = reset(env)
         done = False
         while not done:
@@ -35,7 +37,7 @@ def train(
     env,
     agent: Agent,
 ):
-    fill_memory(env, agent)
+    init_memory(env, agent)
     print("Memory filled with random actions!")
 
     counter = 0
