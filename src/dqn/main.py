@@ -78,7 +78,7 @@ def train(
 
 
 if __name__ == "__main__":
-    env: Env = make("ALE/Skiing-v5", max_episode_steps=1000)
+    env: Env = make("SkiingNoFrameskip-v4", max_episode_steps=1000)
     agent = Agent(action_space=env.action_space)
     train(env, agent)
     agent.save()
