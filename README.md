@@ -24,7 +24,7 @@ pip install torch torchvision
 - For linux (CPU):
 
 ```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 ```
 
 ## How to run the project
