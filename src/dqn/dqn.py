@@ -16,7 +16,7 @@ class DQN(nn.Module):
 
         self.flatten = nn.Flatten()
 
-        self.fc = nn.Linear(64 * 5 * 5, 512)
+        self.fc = nn.Linear(64 * 6 * 6, 512)
         self.output = nn.Linear(512, NUM_ACTIONS)
 
         # TODO: Maybe use RMSProp?

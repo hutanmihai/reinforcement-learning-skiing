@@ -4,7 +4,7 @@ import torch
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 NUM_ACTIONS = 3
-INPUT_SHAPE = (1, 75, 70)  # PyTorch uses (channels, height, width) format
+INPUT_SHAPE = (1, 80, 80)  # PyTorch uses (channels, height, width) format
 
 # TODO: Fine tuning
 LEARNING_RATE = 1e-2

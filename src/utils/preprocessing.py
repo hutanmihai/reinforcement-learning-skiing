@@ -11,17 +11,18 @@ def crop(state: np.ndarray) -> np.ndarray:
     # Exact crop [30:180, 8:152]
     # Rounded crop [30:180, 10:150]
     # Maybe try with both of them
-    return state[30:180, 10:150]
+    return state[30:180, 8:152]
 
 
-def resize(state: np.ndarray, scale: int = 2) -> np.ndarray:
+def resize(state: np.ndarray) -> np.ndarray:
     """
     Downsamples the state image.
     :param state: the state image
     :param scale: the scale to downsample by
     :return: the downsampled image
     """
-    return state[::scale, ::scale]
+    state = cv2.resize(state, (80, 80))
+    return state
 
 
 def rgb2gray(rgb: np.ndarray) -> np.ndarray:
@@ -36,6 +37,17 @@ def rgb2gray(rgb: np.ndarray) -> np.ndarray:
     return grayscale
 
 
+def normalize(state: np.ndarray) -> np.ndarray:
+    """
+    Normalizes the state image.
+    :param state: the state image
+    :return: the normalized image
+    """
+    state = state.astype(np.float32)
+    state /= 255.0
+    return state
+
+
 def preprocess(state: np.ndarray) -> np.ndarray:
     """
     Preprocesses the state image.
@@ -45,4 +57,5 @@ def preprocess(state: np.ndarray) -> np.ndarray:
     state = crop(state)
     state = resize(state)
     state = rgb2gray(state)
+    state = normalize(state)
     return state
