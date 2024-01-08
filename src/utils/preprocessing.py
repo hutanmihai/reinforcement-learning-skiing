@@ -33,7 +33,7 @@ def rgb2gray(rgb: np.ndarray) -> np.ndarray:
     :return: the converted array.
     """
     grayscale = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
-    grayscale = grayscale[np.newaxis, :, :]  # (75, 70) -> (1, 75, 70) for PyTorch
+    grayscale = grayscale[np.newaxis, :, :]  # (int, int) -> (1, int, int) for PyTorch
     return grayscale
 
 
