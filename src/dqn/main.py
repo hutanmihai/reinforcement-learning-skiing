@@ -1,3 +1,5 @@
+import timeit
+
 import numpy as np
 import torch
 from gymnasium import make, Env
@@ -38,13 +40,13 @@ def train(
     agent: Agent,
 ):
     init_memory(env, agent)
-    print("Memory filled with random actions!")
+    print(f"Memory initialized with {BATCH_SIZE} samples! The training shall begin! Let's rock!")
 
-    counter = 0
     reward_history = []
     best_score = -np.inf
 
     for episode in range(NUM_EPISODES):
+        start_time = timeit.default_timer()
         state = reset(env)
         done = False
         episode_reward = 0
@@ -55,21 +57,23 @@ def train(
             agent.replay_memory.store(state, action, reward, done, next_state)
             agent.please_learn()
 
-            if counter % UPDATE_FREQUENCY == 0:
-                agent.update_target_net()
-
             state = next_state
             episode_reward += reward
-            counter += 1
 
         agent.decay_epsilon()
         reward_history.append(episode_reward)
 
         current_avg_score = np.mean(reward_history[-20:])  # moving average over last 20 episodes
+        avg_loss_this_episode = agent.total_loss / max(agent.learns_this_episode, 1)
 
         print(
-            f"Episode: {episode + 1}, Reward: {episode_reward}, Avg. Reward: {current_avg_score}, Epsilon: {agent.epsilon}"
+            f"Episode {episode + 1} | Reward: {episode_reward} | Avg. Reward: {current_avg_score} | Epsilon: {agent.epsilon} | Avg. Loss: {avg_loss_this_episode}"
         )
+        print(f"Episode {episode + 1} took {timeit.default_timer() - start_time} seconds.")
+        print("-" * 100)
+
+        agent.set_loss(0.0)
+        agent.set_learns_this_episode(0)
 
         if current_avg_score > best_score:
             best_score = current_avg_score
@@ -78,7 +82,7 @@ def train(
 
 
 if __name__ == "__main__":
-    env: Env = make("SkiingNoFrameskip-v4", max_episode_steps=1000)
+    env: Env = make("SkiingNoFrameskip-v4")
     agent = Agent(action_space=env.action_space)
     train(env, agent)
     agent.save()

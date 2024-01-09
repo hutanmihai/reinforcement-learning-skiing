@@ -14,6 +14,7 @@ from src.dqn.constants import (
     GAMMA,
     BATCH_SIZE,
     DEVICE,
+    UPDATE_FREQUENCY,
 )
 import numpy as np
 
@@ -29,6 +30,13 @@ class Agent:
         self.policy_net: DQN = DQN().to(DEVICE)
         self.target_net: DQN = DQN().to(DEVICE)
         self.update_target_net()
+
+        self.policy_net.train()
+        self.target_net.eval()
+
+        self.learns = 0
+        self.total_loss = 0.0
+        self.learns_this_episode = 0
 
     def update_target_net(self):
         self.target_net.load_state_dict(self.policy_net.state_dict())
@@ -48,14 +56,20 @@ class Agent:
     def decay_epsilon(self):
         self.epsilon = max(self.epsilon * EPSILON_DECAY, EPSILON_MIN)
 
+    def set_loss(self, loss):
+        self.total_loss = loss
+
+    def set_learns_this_episode(self, learns):
+        self.learns_this_episode = learns
+
     def please_learn(self):
         if len(self.replay_memory) < BATCH_SIZE:
             return
 
-        states, actions, rewards, dones, next_states = self.replay_memory.sample()
+        self.learns += 1
+        self.learns_this_episode += 1
 
-        self.policy_net.train()
-        self.target_net.eval()
+        states, actions, rewards, dones, next_states = self.replay_memory.sample()
 
         predicted_qs = self.policy_net(states).gather(1, actions)
         target_qs = self.target_net(next_states)
@@ -67,6 +81,12 @@ class Agent:
         self.policy_net.optimizer.zero_grad()
         loss.backward()
         self.policy_net.optimizer.step()
+
+        self.total_loss += loss.item()
+
+        if self.learns % UPDATE_FREQUENCY == 0:
+            self.update_target_net()
+            self.save()
 
     def save(self):
         check_if_dirs_exist([MODELS_PATH])
