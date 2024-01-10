@@ -1,5 +1,4 @@
 import torch
-from matplotlib import pyplot as plt
 
 from dqn import DQN
 from replay_memory import ReplayMemory
@@ -14,7 +13,6 @@ from src.dqn.constants import (
     GAMMA,
     BATCH_SIZE,
     DEVICE,
-    UPDATE_FREQUENCY,
 )
 import numpy as np
 
