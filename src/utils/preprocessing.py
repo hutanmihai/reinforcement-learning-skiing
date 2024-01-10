@@ -1,61 +1,71 @@
 import cv2
 import numpy as np
+from src.dqn.constants import WINDOW_SIZE
 
 
-def crop(state: np.ndarray) -> np.ndarray:
+def crop(frame: np.ndarray) -> np.ndarray:
     """
-    Crops the state image to the relevant part of the screen.
-    :param state: the state image
+    Crops the frame image to the relevant part of the screen.
+    :param frame: the frame(state) image
     :return: the cropped image
     """
     # Exact crop [30:180, 8:152]
     # Rounded crop [30:180, 10:150]
     # Maybe try with both of them
-    return state[30:180, 8:152]
+    return frame[30:180, 8:152]
 
 
-def resize(state: np.ndarray) -> np.ndarray:
+def resize(frame: np.ndarray) -> np.ndarray:
     """
-    Downsamples the state image.
-    :param state: the state image
-    :param scale: the scale to downsample by
-    :return: the downsampled image
+    Resizes the frame image.
+    :param frame: the frame(state) image
+    :return: the resized image
     """
-    state = cv2.resize(state, (80, 80))
+    state = cv2.resize(frame, (WINDOW_SIZE, WINDOW_SIZE))
     return state
 
 
 def rgb2gray(rgb: np.ndarray) -> np.ndarray:
     """
-    Converts an rgb image array to a grey image array.
+    Converts a rgb image array to a grey image array.
 
     :param rgb: the rgb image array.
     :return: the converted array.
     """
     grayscale = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
-    grayscale = grayscale[np.newaxis, :, :]  # (int, int) -> (1, int, int) for PyTorch
     return grayscale
 
 
-def normalize(state: np.ndarray) -> np.ndarray:
+def format2pytorch(frame: np.ndarray) -> np.ndarray:
     """
-    Normalizes the state image.
-    :param state: the state image
+    Formats the frame image to be used with PyTorch. It does this by adding a new axis to the image array.
+    (int, int) -> (1, int, int) for PyTorch
+    :param frame: the frame(state) image
+    :return: the formatted image
+    """
+    return frame[np.newaxis, :, :]
+
+
+def normalize(frame: np.ndarray) -> np.ndarray:
+    """
+    Normalizes the frame image.
+    :param frame: the frame(state) image
     :return: the normalized image
     """
-    state = state.astype(np.float32)
-    state /= 255.0
-    return state
+    frame = frame.astype(np.float32)
+    frame /= 255.0
+    return frame
 
 
-def preprocess(state: np.ndarray) -> np.ndarray:
+def preprocess(frame: np.ndarray) -> np.ndarray:
     """
-    Preprocesses the state image.
-    :param state: the state image
+    Preprocesses the frame image.
+    :param frame: the frame(state) image
     :return: the preprocessed image
     """
-    state = crop(state)
-    state = resize(state)
-    state = rgb2gray(state)
-    state = normalize(state)
-    return state
+    frame = crop(frame)
+    frame = resize(frame)
+    frame = rgb2gray(frame)
+    frame = format2pytorch(frame)
+    frame = normalize(frame)
+    return frame

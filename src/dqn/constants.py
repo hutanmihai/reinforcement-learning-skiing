@@ -3,11 +3,15 @@ import torch
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-NUM_ACTIONS = 3
-INPUT_SHAPE = (1, 80, 80)  # PyTorch uses (channels, height, width) format
+CHANNELS = 4  # 4 if using stacked frames, 1 if not
+WINDOW_SIZE = 80  # We are using squared preprocessed images for the network, this is the size of the image in pixels.
+
+NUM_ACTIONS = 3  # Number of actions the agent can take
+INPUT_SHAPE = (CHANNELS, WINDOW_SIZE, WINDOW_SIZE)  # PyTorch uses (channels, height, width) format
 
 # TODO: Fine tuning
 LEARNING_RATE = 0.0005
+MIN_MEMORY_CAPACITY = 100  # This should be at least BATCH_SIZE
 MEMORY_CAPACITY = 100
 NUM_EPISODES = 10
 BATCH_SIZE = 32

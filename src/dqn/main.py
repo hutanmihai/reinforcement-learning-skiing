@@ -4,8 +4,14 @@ import numpy as np
 import torch
 from gymnasium import make, Env
 from src.dqn.agent import Agent
-from src.dqn.constants import MEMORY_CAPACITY, MODEL_PATH, NUM_EPISODES, MODELS_PATH, UPDATE_FREQUENCY, BATCH_SIZE
-from src.utils.helpers import show_image, check_if_dirs_exist
+from src.dqn.constants import (
+    MODEL_PATH,
+    NUM_EPISODES,
+    MODELS_PATH,
+    BATCH_SIZE,
+    MIN_MEMORY_CAPACITY,
+)
+from src.utils.helpers import check_if_dirs_exist
 from src.utils.preprocessing import preprocess
 
 
@@ -23,9 +29,7 @@ def step(env: Env, action: int):
 
 
 def init_memory(env: Env, agent: Agent):
-    # we use BATCH_SIZE because we need at least BATCH_SIZE samples to start learning,
-    # no need to wait for MEMORY_CAPACITY to fill all the way
-    while len(agent.replay_memory) < BATCH_SIZE:
+    while len(agent.replay_memory) < max(MIN_MEMORY_CAPACITY, BATCH_SIZE):
         state = reset(env)
         done = False
         while not done:
