@@ -31,13 +31,44 @@ class ReplayMemory:
 
         self.index = (self.index + 1) % self.capacity
 
+    def get_last3_frames(self):
+        return [self.states[-3], self.states[-2], self.states[-1]]
+
+    def _index_valid(self, index):
+        if any(self.dones[i] for i in range(index - 3, index + 1)):
+            return False
+        return True
+
     def sample(self):
-        indices_to_sample = sample(range(len(self)), BATCH_SIZE)
-        states = torch.from_numpy(np.array(self.states)[indices_to_sample]).float().to(DEVICE)
-        actions = torch.from_numpy(np.array(self.actions)[indices_to_sample]).to(DEVICE).reshape((-1, 1))
-        rewards = torch.from_numpy(np.array(self.rewards)[indices_to_sample]).float().to(DEVICE).reshape((-1, 1))
-        dones = torch.from_numpy(np.array(self.dones)[indices_to_sample]).to(DEVICE).reshape((-1, 1))
-        next_states = torch.from_numpy(np.array(self.next_states)[indices_to_sample]).float().to(DEVICE)
+        states = []
+        actions = []
+        rewards = []
+        dones = []
+        next_states = []
+
+        while len(states) < BATCH_SIZE:
+            index = np.random.randint(4, len(self) - 1)
+            if self._index_valid(index):
+                states.append(
+                    [self.states[index - 3], self.states[index - 2], self.states[index - 1], self.states[index]]
+                )
+                next_states.append(
+                    [
+                        self.next_states[index - 2],
+                        self.next_states[index - 1],
+                        self.next_states[index],
+                        self.next_states[index + 1],
+                    ]
+                )
+                actions.append(self.actions[index])
+                rewards.append(self.rewards[index])
+                dones.append(self.dones[index])
+
+        states = torch.from_numpy(np.array(states)).float().to(DEVICE)
+        actions = torch.from_numpy(np.array(actions)).to(DEVICE).reshape((-1, 1))
+        rewards = torch.from_numpy(np.array(rewards)).float().to(DEVICE).reshape((-1, 1))
+        dones = torch.from_numpy(np.array(dones)).to(DEVICE).reshape((-1, 1))
+        next_states = torch.from_numpy(np.array(next_states)).float().to(DEVICE)
 
         return states, actions, rewards, dones, next_states
 

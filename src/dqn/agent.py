@@ -43,11 +43,12 @@ class Agent:
         if random() < self.epsilon:
             return self.action_space.sample()
 
-        if not torch.is_tensor(state):
-            state = torch.from_numpy(np.array(state)).float().unsqueeze(0).to(DEVICE)
+        last3_frames = self.replay_memory.get_last3_frames()
+        stacked_frames = last3_frames + [state]
+        stacked_frames = torch.from_numpy(np.array(stacked_frames)).float().unsqueeze(0).to(DEVICE)
 
         with torch.no_grad():
-            action = torch.argmax(self.policy_net(state))
+            action = torch.argmax(self.policy_net(stacked_frames))
 
         return action.item()
 

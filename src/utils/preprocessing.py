@@ -66,6 +66,6 @@ def preprocess(frame: np.ndarray) -> np.ndarray:
     frame = crop(frame)
     frame = resize(frame)
     frame = rgb2gray(frame)
-    frame = format2pytorch(frame)
+    # frame = format2pytorch(frame)
     frame = normalize(frame)
     return frame

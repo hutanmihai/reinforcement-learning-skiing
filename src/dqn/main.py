@@ -88,6 +88,6 @@ def train(env: Env, agent: Agent):
 
 
 if __name__ == "__main__":
-    env: Env = make("SkiingNoFrameskip-v4")
+    env: Env = make("ALE/Skiing-v5", render_mode="human")
     agent = Agent(action_space=env.action_space)
     train(env, agent)
