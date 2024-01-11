@@ -41,7 +41,7 @@ def init_memory(env: Env, agent: Agent):
 
 def train(env: Env, agent: Agent):
     init_memory(env, agent)
-    print(f"Memory initialized with {BATCH_SIZE} samples! The training shall begin! Let's rock!")
+    print(f"Memory initialized with {len(agent.replay_memory)} samples! The training shall begin! Let's rock!")
 
     reward_history = []
     best_score = -np.inf

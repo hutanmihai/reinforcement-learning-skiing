@@ -62,7 +62,11 @@ class Agent:
         predicted_qs = self.policy_net(states).gather(1, actions)
         target_qs = self.target_net(next_states)
         target_qs = torch.max(target_qs, dim=1).values.reshape(-1, 1)
-        target_qs[dones] = 0.0
+
+        for i in range(len(dones)):
+            if dones[i]:
+                target_qs[i] = 0
+
         target_qs = rewards + (GAMMA * target_qs)
 
         loss = self.policy_net.loss(predicted_qs, target_qs)
@@ -71,6 +75,9 @@ class Agent:
         self.policy_net.optimizer.step()
 
         self.total_loss += loss.item()
+
+    def set_epsilon(self, epsilon):
+        self.epsilon = epsilon
 
     def save(self):
         torch.save(self.policy_net.state_dict(), POLICY_NET_PATH)

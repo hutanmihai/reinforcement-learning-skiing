@@ -19,7 +19,10 @@ class DQN(nn.Module):
         # TODO: Maybe use RMSProp?
         self.optimizer = optim.Adam(self.parameters(), lr=LEARNING_RATE)
         # self.optimizer = optim.RMSprop(self.parameters(), lr=LEARNING_RATE)
-        self.loss = nn.MSELoss()
+
+        # TODO: Seems to work better with HuberLoss, maybe optimize delta?
+        # self.loss = nn.MSELoss()
+        self.loss = nn.HuberLoss()
 
     def _forward_features(self, x):
         x = self.relu(self.conv1(x))
