@@ -9,9 +9,9 @@ from src.dqn.constants import (
     NUM_EPISODES,
     MODELS_PATH,
     BATCH_SIZE,
-    MIN_MEMORY_CAPACITY,
+    MIN_MEMORY_CAPACITY, PERFORMANCE_PATH, UPDATE_FREQUENCY,
 )
-from src.utils.helpers import check_if_dirs_exist
+from src.utils.helpers import check_if_dirs_exist, save_results_plot_html
 from src.utils.preprocessing import preprocess
 
 
@@ -64,13 +64,13 @@ def train(env: Env, agent: Agent):
             episode_reward += reward
             step_counter += 1
 
-        # We update the target net every episode, one episode has around 4k steps
-        agent.update_target_net()
+        if episode % UPDATE_FREQUENCY == 0:
+            agent.update_target_net()
 
         agent.decay_epsilon()
         reward_history.append(episode_reward)
 
-        current_avg_score = np.mean(reward_history[-20:])  # moving average over last 20 episodes
+        current_avg_score = np.mean(reward_history[-100:])  # moving average over last 20 episodes
 
         print(
             f"Episode {episode + 1} | Reward: {episode_reward} | Avg Reward: {current_avg_score} | Epsilon: {agent.epsilon}"
@@ -79,15 +79,16 @@ def train(env: Env, agent: Agent):
         print(f"Episode {episode + 1} took {timeit.default_timer() - start_time} seconds.")
         print("-" * 100)
 
-        if current_avg_score > best_score:
-            best_score = current_avg_score
-            check_if_dirs_exist([MODELS_PATH])
+        if reward_history[-1] > best_score:
+            best_score = reward_history[-1]
             torch.save(agent.policy_net.state_dict(), MODEL_PATH)
+            agent.save()
 
-        agent.save()
+    save_results_plot_html(reward_history)
 
 
 if __name__ == "__main__":
-    env: Env = make("ALE/Skiing-v5", render_mode="human")
+    check_if_dirs_exist([MODELS_PATH, PERFORMANCE_PATH])
+    env: Env = make("ALE/Skiing-v5")
     agent = Agent(action_space=env.action_space)
     train(env, agent)

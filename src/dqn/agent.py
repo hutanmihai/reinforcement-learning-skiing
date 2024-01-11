@@ -6,7 +6,6 @@ from random import random
 from src.dqn.constants import (
     POLICY_NET_PATH,
     TARGET_NET_PATH,
-    MODELS_PATH,
     EPSILON_MAX,
     EPSILON_MIN,
     EPSILON_DECAY,
@@ -15,8 +14,6 @@ from src.dqn.constants import (
     DEVICE,
 )
 import numpy as np
-
-from src.utils.helpers import check_if_dirs_exist
 
 
 class Agent:
@@ -76,7 +73,6 @@ class Agent:
         self.total_loss += loss.item()
 
     def save(self):
-        check_if_dirs_exist([MODELS_PATH])
         torch.save(self.policy_net.state_dict(), POLICY_NET_PATH)
         torch.save(self.target_net.state_dict(), TARGET_NET_PATH)
 

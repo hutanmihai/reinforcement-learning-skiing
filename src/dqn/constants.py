@@ -11,11 +11,11 @@ INPUT_SHAPE = (CHANNELS, WINDOW_SIZE, WINDOW_SIZE)  # PyTorch uses (channels, he
 
 # TODO: Fine tuning
 LEARNING_RATE = 0.0005
-MIN_MEMORY_CAPACITY = 100  # This should be at least BATCH_SIZE
-MEMORY_CAPACITY = 5_000
-NUM_EPISODES = 10
+MIN_MEMORY_CAPACITY = 100_000  # This should be at least BATCH_SIZE
+MEMORY_CAPACITY = 500_000
+NUM_EPISODES = 2000
 BATCH_SIZE = 32
-UPDATE_FREQUENCY = 1
+UPDATE_FREQUENCY = 10  # How often to update the target network, measured in episodes
 
 # These might be good
 GAMMA = 0.99
@@ -27,3 +27,6 @@ MODELS_PATH = Path("models")
 POLICY_NET_PATH = MODELS_PATH / "policy_net.pth"
 TARGET_NET_PATH = MODELS_PATH / "target_net.pth"
 MODEL_PATH = MODELS_PATH / "model.pth"
+
+PERFORMANCE_PATH = Path("performance")
+DQN_PERFORMANCE_PATH = PERFORMANCE_PATH / "dqn_performance.html"

@@ -5,20 +5,20 @@
 ```bash
 conda create -n rl-skiing python=3.11.5
 conda activate rl-skiing
-pip install numpy matplotlib jupyter opencv-python gymnasium
-pip install "gymnasium[accept-rom-license, atari]"
+pip3 install numpy plotly==5.18.0 jupyter opencv-python gymnasium
+pip3 install "gymnasium[accept-rom-license, atari]"
 ```
 
 - For windows (GPU):
 
 ```bash
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+pip3 install torch --index-url https://download.pytorch.org/whl/cu121
 ```
 
 - For windows (CPU) / macos (CPU) / linux (GPU):
 
 ```bash
-pip install torch torchvision
+pip3 install torch
 ```
 
 - For linux (CPU):
