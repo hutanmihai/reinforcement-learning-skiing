@@ -35,17 +35,6 @@ def rgb2gray(rgb: np.ndarray) -> np.ndarray:
     grayscale = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
     return grayscale
 
-
-def format2pytorch(frame: np.ndarray) -> np.ndarray:
-    """
-    Formats the frame image to be used with PyTorch. It does this by adding a new axis to the image array.
-    (int, int) -> (1, int, int) for PyTorch
-    :param frame: the frame(state) image
-    :return: the formatted image
-    """
-    return frame[np.newaxis, :, :]
-
-
 def normalize(frame: np.ndarray) -> np.ndarray:
     """
     Normalizes the frame image.
@@ -66,6 +55,5 @@ def preprocess(frame: np.ndarray) -> np.ndarray:
     frame = crop(frame)
     frame = resize(frame)
     frame = rgb2gray(frame)
-    # frame = format2pytorch(frame)
     frame = normalize(frame)
     return frame
