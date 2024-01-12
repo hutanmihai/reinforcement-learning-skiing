@@ -5,7 +5,7 @@
 ```bash
 conda create -n rl-skiing python=3.11.5
 conda activate rl-skiing
-pip3 install numpy plotly==5.18.0 jupyter opencv-python gymnasium
+pip3 install numpy plotly==5.18.0 opencv-python gymnasium
 pip3 install "gymnasium[accept-rom-license, atari]"
 ```
 
@@ -51,14 +51,14 @@ export PYTHONPATH=.
 
 ### 2. Run the project
 
-- Run DQN:
+- Run DQN or DDQN:
 
 ```bash
-python src/dqn/main.py
+python src/main.py [--dqn | --ddqn]
 ```
 
-- Run PPO:
+- Test DQN or DDQN:
 
 ```bash
-python src/ppo/main.py
+python src/test.py [--dqn | --ddqn]
 ```

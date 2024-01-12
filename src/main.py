@@ -1,9 +1,10 @@
 import timeit
+from argparse import ArgumentParser
 
 import numpy as np
 from gymnasium import make, Env
-from src.ddqn.agent import Agent
-from src.ddqn.constants import (
+from src.agent import Agent
+from src.constants import (
     NUM_EPISODES,
     MODELS_PATH,
     PERFORMANCE_PATH,
@@ -39,8 +40,9 @@ def train(env: Env, agent: Agent):
             episode_reward += reward
             step_counter += 1
 
-        if episode % UPDATE_FREQUENCY == 0:
-            agent.update_target_net()
+        if agent.algorithm == "ddqn":
+            if episode % UPDATE_FREQUENCY == 0:
+                agent.update_target_net()
 
         agent.decay_epsilon()
         reward_history.append(episode_reward)
@@ -66,7 +68,18 @@ def train(env: Env, agent: Agent):
 
 
 if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument("--dqn", action="store_true", help="Flag to run in DQN mode")
+    parser.add_argument("--ddqn", action="store_true", help="Flag to run in DDQN mode")
+    args = parser.parse_args()
+    if args.dqn:
+        algorithm = "dqn"
+    elif args.ddqn:
+        algorithm = "ddqn"
+    else:
+        raise ValueError("Please specify either --dqn or --ddqn flag!")
+
     check_if_dirs_exist([MODELS_PATH, PERFORMANCE_PATH])
     env: Env = make("ALE/Skiing-v5")
-    agent = Agent(action_space=env.action_space, algorithm="ddqn")
+    agent = Agent(action_space=env.action_space, algorithm=algorithm)
     train(env, agent)

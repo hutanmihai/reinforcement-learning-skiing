@@ -3,10 +3,10 @@ from typing import Literal
 
 import torch
 
-from src.ddqn.net import Net
-from src.ddqn.replay_memory import ReplayMemory
+from src.net import Net
+from src.replay_memory import ReplayMemory
 from random import random
-from src.ddqn.constants import (
+from src.constants import (
     POLICY_NET_PATH_SKELETON,
     TARGET_NET_PATH_SKELETON,
     EPSILON_MAX,
@@ -64,6 +64,7 @@ class Agent:
         states, actions, rewards, dones, next_states = self.replay_memory.sample()
 
         if self.algorithm == "ddqn":
+            # DDQN
             predicted_qs = self.policy_net(states).gather(1, actions)
             target_qs = self.target_net(next_states)
             target_qs = torch.max(target_qs, dim=1).values.reshape(-1, 1)
@@ -71,10 +72,9 @@ class Agent:
             target_qs = rewards + (GAMMA * target_qs)
 
         else:
-            # TODO: implement DQN
+            # DQN
             predicted_qs = self.policy_net(states).gather(1, actions)
-            target_qs = self.target_net(next_states)
-            target_qs = torch.max(target_qs, dim=1).values.reshape(-1, 1)
+            target_qs = predicted_qs.clone()
             target_qs[dones] = 0.0
             target_qs = rewards + (GAMMA * target_qs)
 
@@ -89,10 +89,13 @@ class Agent:
         self.epsilon = epsilon
 
     def save(self, name_suffix: str):
-        torch.save(self.policy_net.state_dict(), POLICY_NET_PATH_SKELETON + self.algorithm + name_suffix + ".pth")
-        torch.save(self.target_net.state_dict(), TARGET_NET_PATH_SKELETON + self.algorithm + name_suffix + ".pth")
+        torch.save(self.policy_net.state_dict(), POLICY_NET_PATH_SKELETON + self.algorithm + "_" + name_suffix + ".pth")
+        if self.algorithm == "ddqn":
+            torch.save(
+                self.target_net.state_dict(), TARGET_NET_PATH_SKELETON + self.algorithm + "_" + name_suffix + ".pth"
+            )
 
-    def load(self, policy_net_path: str | Path, target_net_path: str | Path):
+    def load(self, policy_net_path: str | Path, target_net_path: str | Path | None = None):
         self.policy_net.load_state_dict(torch.load(policy_net_path))
         self.target_net.load_state_dict(torch.load(target_net_path))
         self.target_net.eval()

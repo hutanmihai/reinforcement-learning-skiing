@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from src.ddqn.constants import WINDOW_SIZE
+from src.constants import WINDOW_SIZE
 
 
 def crop(frame: np.ndarray) -> np.ndarray:

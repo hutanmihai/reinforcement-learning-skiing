@@ -1,6 +1,6 @@
 from gymnasium import Env
 
-from src.ddqn.constants import MIN_MEMORY_CAPACITY, BATCH_SIZE
+from src.constants import MIN_MEMORY_CAPACITY, BATCH_SIZE
 from src.utils.preprocessing import preprocess
 
 

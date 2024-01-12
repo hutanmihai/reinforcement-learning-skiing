@@ -1,6 +1,6 @@
 import torch.nn as nn
 from torch import optim
-from src.ddqn.constants import INPUT_SHAPE, NUM_ACTIONS, LEARNING_RATE
+from src.constants import INPUT_SHAPE, NUM_ACTIONS, LEARNING_RATE
 
 
 class Net(nn.Module):
