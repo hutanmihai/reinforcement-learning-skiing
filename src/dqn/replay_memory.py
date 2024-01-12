@@ -64,9 +64,9 @@ class ReplayMemory:
                 dones.append(self.dones[index])
 
         states = torch.from_numpy(np.array(states)).float().to(DEVICE)
-        actions = torch.from_numpy(np.array(actions)).to(DEVICE).reshape((-1, 1))
-        rewards = torch.from_numpy(np.array(rewards)).float().to(DEVICE).reshape((-1, 1))
-        dones = torch.from_numpy(np.array(dones)).to(DEVICE).reshape((-1, 1))
+        actions = torch.from_numpy(np.array(actions)).reshape((-1, 1)).to(torch.int64).to(DEVICE)
+        rewards = torch.from_numpy(np.array(rewards)).float().reshape((-1, 1)).to(DEVICE)
+        dones = torch.from_numpy(np.array(dones)).reshape((-1, 1)).to(torch.bool).to(DEVICE)
         next_states = torch.from_numpy(np.array(next_states)).float().to(DEVICE)
 
         return states, actions, rewards, dones, next_states

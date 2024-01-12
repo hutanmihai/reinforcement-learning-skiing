@@ -13,7 +13,7 @@ INPUT_SHAPE = (CHANNELS, WINDOW_SIZE, WINDOW_SIZE)  # PyTorch uses (channels, he
 LEARNING_RATE = 0.0005
 MIN_MEMORY_CAPACITY = 100_000  # This should be at least BATCH_SIZE
 MEMORY_CAPACITY = 500_000
-NUM_EPISODES = 4000
+NUM_EPISODES = 10000
 BATCH_SIZE = 32  # How many samples to take from the replay memory when learning
 UPDATE_FREQUENCY = 10  # How often to update the target network, measured in episodes
 
