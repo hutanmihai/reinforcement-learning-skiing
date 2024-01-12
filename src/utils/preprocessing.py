@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from src.dqn.constants import WINDOW_SIZE
+from src.ddqn.constants import WINDOW_SIZE
 
 
 def crop(frame: np.ndarray) -> np.ndarray:
@@ -34,6 +34,7 @@ def rgb2gray(rgb: np.ndarray) -> np.ndarray:
     """
     grayscale = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
     return grayscale
+
 
 def normalize(frame: np.ndarray) -> np.ndarray:
     """

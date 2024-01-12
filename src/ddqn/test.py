@@ -1,7 +1,7 @@
 from gymnasium import Env, make
 
-from src.dqn.agent import Agent
-from src.dqn.main import reset, step
+from src.ddqn.agent import Agent
+from src.ddqn.main import reset, step
 
 
 def run(env: Env, agent: Agent, episodes_to_run: int = 10):
@@ -27,8 +27,8 @@ def run(env: Env, agent: Agent, episodes_to_run: int = 10):
         print(f"Episode {episode + 1} finished with reward {total_reward}!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     env: Env = make("ALE/Skiing-v5", render_mode="human")
     agent = Agent(action_space=env.action_space)
-    agent.load()
+    agent.load(policy_net_path="models/policy_net_best_avg.pth", target_net_path="models/target_net_best_avg.pth")
     run(env, agent)

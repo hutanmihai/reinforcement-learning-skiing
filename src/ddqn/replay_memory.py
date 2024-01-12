@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 
-from src.dqn.constants import MEMORY_CAPACITY, BATCH_SIZE, DEVICE
+from src.ddqn.constants import MEMORY_CAPACITY, BATCH_SIZE, DEVICE
 
 
 class ReplayMemory:

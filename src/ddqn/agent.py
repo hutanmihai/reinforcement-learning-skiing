@@ -1,11 +1,13 @@
+from pathlib import Path
+
 import torch
 
-from dqn import DQN
+from ddqn import NetDDQN
 from replay_memory import ReplayMemory
 from random import random
-from src.dqn.constants import (
-    POLICY_NET_PATH,
-    TARGET_NET_PATH,
+from src.ddqn.constants import (
+    POLICY_NET_PATH_SKELETON,
+    TARGET_NET_PATH_SKELETON,
     EPSILON_MAX,
     EPSILON_MIN,
     EPSILON_DECAY,
@@ -22,8 +24,8 @@ class Agent:
         self.epsilon: float = EPSILON_MAX
         self.replay_memory: ReplayMemory = ReplayMemory()
 
-        self.policy_net: DQN = DQN().to(DEVICE)
-        self.target_net: DQN = DQN().to(DEVICE)
+        self.policy_net: NetDDQN = NetDDQN().to(DEVICE)
+        self.target_net: NetDDQN = NetDDQN().to(DEVICE)
         self.update_target_net()
 
         self.policy_net.train()
@@ -79,11 +81,11 @@ class Agent:
     def set_epsilon(self, epsilon):
         self.epsilon = epsilon
 
-    def save(self):
-        torch.save(self.policy_net.state_dict(), POLICY_NET_PATH)
-        torch.save(self.target_net.state_dict(), TARGET_NET_PATH)
+    def save(self, name_suffix: str):
+        torch.save(self.policy_net.state_dict(), POLICY_NET_PATH_SKELETON + name_suffix + ".pth")
+        torch.save(self.target_net.state_dict(), TARGET_NET_PATH_SKELETON + name_suffix + ".pth")
 
-    def load(self):
-        self.policy_net.load_state_dict(torch.load(POLICY_NET_PATH))
-        self.target_net.load_state_dict(torch.load(TARGET_NET_PATH))
+    def load(self, policy_net_path: str | Path, target_net_path: str | Path):
+        self.policy_net.load_state_dict(torch.load(policy_net_path))
+        self.target_net.load_state_dict(torch.load(target_net_path))
         self.target_net.eval()
