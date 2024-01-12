@@ -97,5 +97,6 @@ class Agent:
 
     def load(self, policy_net_path: str | Path, target_net_path: str | Path | None = None):
         self.policy_net.load_state_dict(torch.load(policy_net_path))
-        self.target_net.load_state_dict(torch.load(target_net_path))
-        self.target_net.eval()
+        if self.algorithm == "ddqn" and target_net_path is not None:
+            self.target_net.load_state_dict(torch.load(target_net_path))
+            self.target_net.eval()

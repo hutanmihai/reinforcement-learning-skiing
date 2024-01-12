@@ -15,10 +15,15 @@ def run_test(env: Env, agent: Agent, episodes_to_run: int = 10):
 
         next_state, reward, done, info = step(env, 0)
         agent.replay_memory.store(state, 0, reward, done, next_state)
+        total_reward += reward
         next_state, reward, done, info = step(env, 0)
         agent.replay_memory.store(state, 0, reward, done, next_state)
+        total_reward += reward
         next_state, reward, done, info = step(env, 0)
         agent.replay_memory.store(state, 0, reward, done, next_state)
+        total_reward += reward
+
+        state = next_state
 
         while not done:
             action = agent.select_action(state)
@@ -59,7 +64,7 @@ if __name__ == "__main__":
     #     policy_net_path = f"models/policy_net_{algorithm}_avg.pth"
     #     target_net_path = None
 
-    env: Env = make("ALE/Skiing-v5", render_mode="human")
+    env: Env = make("ALE/Skiing-v5")
     agent = Agent(action_space=env.action_space, algorithm=algorithm)
     if algorithm == "ddqn":
         agent.load(policy_net_path, target_net_path)
