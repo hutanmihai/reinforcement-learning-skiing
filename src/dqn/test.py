@@ -5,7 +5,7 @@ from src.dqn.main import reset, step
 
 
 def run(env: Env, agent: Agent, episodes_to_run: int = 10):
-    agent.set_epsilon(0.1)
+    agent.set_epsilon(0)
     for episode in range(episodes_to_run):
         state = reset(env)
         total_reward = 0
