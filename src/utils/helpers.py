@@ -81,7 +81,6 @@ def save_results_plot_html(rewards, name_suffix: str):
         line=dict(color="brown", dash="dash"),
     )
 
-    # Creating layout
     layout = go.Layout(
         title="Agent Performance Over Episodes",
         xaxis=dict(title="Episodes"),
@@ -89,7 +88,6 @@ def save_results_plot_html(rewards, name_suffix: str):
         showlegend=True,
     )
 
-    # Creating figure
     fig = go.Figure(
         data=[
             agent_trace,
@@ -104,5 +102,4 @@ def save_results_plot_html(rewards, name_suffix: str):
         layout=layout,
     )
 
-    # Saving the plot
     fig.write_html(PERFORMANCE_PATH_SKELETON + name_suffix + ".html")

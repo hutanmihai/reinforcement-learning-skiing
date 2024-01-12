@@ -1,9 +1,10 @@
 from pathlib import Path
+from typing import Literal
 
 import torch
 
-from ddqn import NetDDQN
-from replay_memory import ReplayMemory
+from src.ddqn.net import Net
+from src.ddqn.replay_memory import ReplayMemory
 from random import random
 from src.ddqn.constants import (
     POLICY_NET_PATH_SKELETON,
@@ -19,13 +20,14 @@ import numpy as np
 
 
 class Agent:
-    def __init__(self, action_space):
+    def __init__(self, action_space, algorithm: Literal["ddqn", "dqn"] | str):
+        self.algorithm = algorithm
         self.action_space = action_space
         self.epsilon: float = EPSILON_MAX
         self.replay_memory: ReplayMemory = ReplayMemory()
 
-        self.policy_net: NetDDQN = NetDDQN().to(DEVICE)
-        self.target_net: NetDDQN = NetDDQN().to(DEVICE)
+        self.policy_net: Net = Net().to(DEVICE)
+        self.target_net: Net = Net().to(DEVICE)
         self.update_target_net()
 
         self.policy_net.train()
@@ -55,21 +57,26 @@ class Agent:
     def set_loss(self, loss):
         self.total_loss = loss
 
-    def please_learn(self):
+    def learn(self):
         if len(self.replay_memory) < BATCH_SIZE:
             return
 
         states, actions, rewards, dones, next_states = self.replay_memory.sample()
 
-        predicted_qs = self.policy_net(states).gather(1, actions)
-        target_qs = self.target_net(next_states)
-        target_qs = torch.max(target_qs, dim=1).values.reshape(-1, 1)
+        if self.algorithm == "ddqn":
+            predicted_qs = self.policy_net(states).gather(1, actions)
+            target_qs = self.target_net(next_states)
+            target_qs = torch.max(target_qs, dim=1).values.reshape(-1, 1)
+            target_qs[dones] = 0.0
+            target_qs = rewards + (GAMMA * target_qs)
 
-        for i in range(len(dones)):
-            if dones[i]:
-                target_qs[i] = 0
-
-        target_qs = rewards + (GAMMA * target_qs)
+        else:
+            # TODO: implement DQN
+            predicted_qs = self.policy_net(states).gather(1, actions)
+            target_qs = self.target_net(next_states)
+            target_qs = torch.max(target_qs, dim=1).values.reshape(-1, 1)
+            target_qs[dones] = 0.0
+            target_qs = rewards + (GAMMA * target_qs)
 
         loss = self.policy_net.loss(predicted_qs, target_qs)
         self.policy_net.optimizer.zero_grad()
@@ -82,8 +89,8 @@ class Agent:
         self.epsilon = epsilon
 
     def save(self, name_suffix: str):
-        torch.save(self.policy_net.state_dict(), POLICY_NET_PATH_SKELETON + name_suffix + ".pth")
-        torch.save(self.target_net.state_dict(), TARGET_NET_PATH_SKELETON + name_suffix + ".pth")
+        torch.save(self.policy_net.state_dict(), POLICY_NET_PATH_SKELETON + self.algorithm + name_suffix + ".pth")
+        torch.save(self.target_net.state_dict(), TARGET_NET_PATH_SKELETON + self.algorithm + name_suffix + ".pth")
 
     def load(self, policy_net_path: str | Path, target_net_path: str | Path):
         self.policy_net.load_state_dict(torch.load(policy_net_path))

@@ -28,7 +28,17 @@ def run(env: Env, agent: Agent, episodes_to_run: int = 10):
 
 
 if __name__ == "__main__":
+    # Use this for DDQN
+    algorithm = "ddqn"
+    policy_net_path = "models/policy_net_ddqn_solo.pth"
+    target_net_path = "models/target_net_ddqn_avg.pth"
+
+    # Use this for DQN
+    # algorithm = "dqn"
+    # policy_net_path = "models/policy_net_dqn_solo.pth"
+    # target_net_path = "models/target_net_dqn_avg.pth"
+
     env: Env = make("ALE/Skiing-v5", render_mode="human")
-    agent = Agent(action_space=env.action_space)
-    agent.load(policy_net_path="models/policy_net_best_avg.pth", target_net_path="models/target_net_best_avg.pth")
+    agent = Agent(action_space=env.action_space, algorithm=algorithm)
+    agent.load(policy_net_path, target_net_path)
     run(env, agent)

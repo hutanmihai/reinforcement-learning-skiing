@@ -33,7 +33,7 @@ def train(env: Env, agent: Agent):
             action = agent.select_action(state)
             next_state, reward, done, info = step(env, action)
             agent.replay_memory.store(state, action, reward, done, next_state)
-            agent.please_learn()
+            agent.learn()
 
             state = next_state
             episode_reward += reward
@@ -62,11 +62,11 @@ def train(env: Env, agent: Agent):
             best_avg_score = current_avg_score
             agent.save(name_suffix="avg")
 
-    save_results_plot_html(reward_history, name_suffix="ddqn")
+    save_results_plot_html(reward_history, agent.algorithm)
 
 
 if __name__ == "__main__":
     check_if_dirs_exist([MODELS_PATH, PERFORMANCE_PATH])
     env: Env = make("ALE/Skiing-v5")
-    agent = Agent(action_space=env.action_space)
+    agent = Agent(action_space=env.action_space, algorithm="ddqn")
     train(env, agent)
