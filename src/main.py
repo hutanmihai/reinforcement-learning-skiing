@@ -9,6 +9,8 @@ from src.constants import (
     MODELS_PATH,
     PERFORMANCE_PATH,
     UPDATE_FREQUENCY,
+    LEARNING_RATE_DECAY,
+    MIN_LEARNING_RATE,
 )
 from src.utils.helpers import check_if_dirs_exist, save_results_plot_html
 from src.utils.runners import reset, step, init_memory
@@ -19,6 +21,9 @@ def train(env: Env, agent: Agent):
     print(f"Memory initialized with {len(agent.replay_memory)} samples! The training shall begin! Let's rock!")
 
     reward_history = []
+    loss_history = []
+    last_best_loss_change_counter = 0
+    best_loss = np.inf
     best_score = -np.inf
     best_avg_score = -np.inf
 
@@ -46,11 +51,18 @@ def train(env: Env, agent: Agent):
 
         agent.decay_epsilon()
         reward_history.append(episode_reward)
+        loss_history.append(agent.total_loss / max(step_counter, 1))
+        last_best_loss_change_counter += 1
+
+        if last_best_loss_change_counter > 50:
+            # Reduce learning rate if loss hasn't improved in 100 episodes
+            agent.set_learning_rate(max(agent.policy_net.learning_rate * LEARNING_RATE_DECAY, MIN_LEARNING_RATE))
+            last_best_loss_change_counter = 0
 
         current_avg_score = np.mean(reward_history[-100:])  # moving average over last 100 episodes
 
         print(
-            f"Episode {episode + 1} | Reward: {episode_reward} | Avg Reward: {current_avg_score} | Epsilon: {agent.epsilon}"
+            f"Episode {episode + 1} | Reward: {episode_reward} | Avg Reward: {current_avg_score} | Epsilon: {agent.epsilon}  | LR: {agent.policy_net.learning_rate}"
         )
         print(f"Avg Loss: {agent.total_loss / max(step_counter, 1)} | Steps: {step_counter}")
         print(f"Episode {episode + 1} took {timeit.default_timer() - start_time} seconds.")
@@ -63,6 +75,10 @@ def train(env: Env, agent: Agent):
         if current_avg_score > best_avg_score:
             best_avg_score = current_avg_score
             agent.save(name_suffix="avg")
+
+        if loss_history[-1] < best_loss:
+            best_loss = loss_history[-1]
+            last_best_loss_change_counter = 0
 
     save_results_plot_html(reward_history, agent.algorithm)
 
