@@ -51,9 +51,6 @@ class Agent:
 
         return action.item()
 
-    def set_learning_rate(self, learning_rate):
-        self.policy_net.set_learning_rate(learning_rate)
-
     def decay_epsilon(self):
         self.epsilon = max(self.epsilon * EPSILON_DECAY, EPSILON_MIN)
 
