@@ -47,6 +47,7 @@ class Agent:
         stacked_frames = torch.from_numpy(np.array(stacked_frames)).float().unsqueeze(0).to(DEVICE)
 
         with torch.no_grad():
+            # print(self.policy_net(stacked_frames))
             action = torch.argmax(self.policy_net(stacked_frames))
 
         return action.item()
