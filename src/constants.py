@@ -12,11 +12,11 @@ INPUT_SHAPE = (CHANNELS, WINDOW_SIZE, WINDOW_SIZE)  # PyTorch uses (channels, he
 LEARNING_RATE = 0.001  # TODO: Try decaying learning rate from 0.1 to 0.0005
 
 MIN_MEMORY_CAPACITY = 100_000  # This should be at least BATCH_SIZE
-MEMORY_CAPACITY = 500_000
+MEMORY_CAPACITY = 200_000
 
 NUM_EPISODES = 1_000
 BATCH_SIZE = 32  # TODO: Maybe try 256?
-UPDATE_FREQUENCY = 10  # How often to update the target network, measured in episodes
+UPDATE_FREQUENCY = 5  # How often to update the target network, measured in episodes
 
 GAMMA = 0.99
 EPSILON_MAX = 1.0

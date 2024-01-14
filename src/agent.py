@@ -47,7 +47,6 @@ class Agent:
         stacked_frames = torch.from_numpy(np.array(stacked_frames)).float().unsqueeze(0).to(DEVICE)
 
         with torch.no_grad():
-            # print(self.policy_net(stacked_frames))
             action = torch.argmax(self.policy_net(stacked_frames))
 
         return action.item()
@@ -75,7 +74,8 @@ class Agent:
         else:
             # DQN
             predicted_qs = self.policy_net(states).gather(1, actions)
-            target_qs = predicted_qs.clone()
+            target_qs = self.policy_net(next_states)
+            target_qs = torch.max(target_qs, dim=1).values.reshape(-1, 1)
             target_qs[dones] = 0.0
             target_qs = rewards + (GAMMA * target_qs)
 

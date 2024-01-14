@@ -1,6 +1,6 @@
 import torch.nn as nn
 from torch import optim
-from src.constants import INPUT_SHAPE, NUM_ACTIONS, LEARNING_RATE
+from src.constants import INPUT_SHAPE, NUM_ACTIONS, LEARNING_RATE, DEVICE
 
 
 class Net(nn.Module):
@@ -20,7 +20,7 @@ class Net(nn.Module):
         self.relu = nn.ReLU()
 
         self.optimizer = optim.Adam(self.parameters(), lr=LEARNING_RATE)
-        self.loss = nn.HuberLoss()
+        self.loss = nn.HuberLoss().to(DEVICE)
 
     def _forward_features(self, x):
         x = self.batch_norm1(self.relu(self.conv1(x)))
