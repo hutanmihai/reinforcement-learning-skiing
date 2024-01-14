@@ -58,11 +58,11 @@ def train(env: Env, agent: Agent):
         print(f"Episode {episode + 1} took {timeit.default_timer() - start_time} seconds.")
         print("-" * 100)
 
-        if reward_history[-1] >= best_score:
+        if reward_history[-1] >= best_score and episode > 500:
             best_score = reward_history[-1]
             agent.save(name_suffix="solo")
 
-        if current_avg_score >= best_avg_score:
+        if current_avg_score >= best_avg_score and episode > 500:
             best_avg_score = current_avg_score
             agent.save(name_suffix="avg")
 
