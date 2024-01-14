@@ -3,27 +3,18 @@ from argparse import ArgumentParser
 from gymnasium import Env, make
 
 from src.agent import Agent
-from src.main import reset, step
+from src.main import step
+from src.utils.runners import init_new_episode
 
 
 def run_test(env: Env, agent: Agent, episodes_to_run: int = 10):
     agent.set_epsilon(0)
     agent.policy_net.eval()
     for episode in range(episodes_to_run):
-        state = reset(env)
         total_reward = 0
 
-        next_state, reward, done, info = step(env, 0)
-        agent.replay_memory.store(state, 0, reward, done, next_state)
-        total_reward += reward
-        next_state, reward, done, info = step(env, 0)
-        agent.replay_memory.store(state, 0, reward, done, next_state)
-        total_reward += reward
-        next_state, reward, done, info = step(env, 0)
-        agent.replay_memory.store(state, 0, reward, done, next_state)
-        total_reward += reward
-
-        state = next_state
+        state, rewards, done = init_new_episode(env, agent)
+        total_reward += rewards
 
         while not done:
             action = agent.select_action(state)

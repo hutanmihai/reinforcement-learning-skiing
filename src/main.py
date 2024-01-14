@@ -11,7 +11,7 @@ from src.constants import (
     UPDATE_FREQUENCY,
 )
 from src.utils.helpers import check_if_dirs_exist, save_results_plot_html
-from src.utils.runners import reset, step, init_memory
+from src.utils.runners import step, init_memory, init_new_episode
 
 
 def train(env: Env, agent: Agent):
@@ -25,11 +25,11 @@ def train(env: Env, agent: Agent):
 
     for episode in range(NUM_EPISODES):
         start_time = timeit.default_timer()
-        state = reset(env)
-        done = False
         episode_reward = 0
         step_counter = 0
-        agent.set_loss(0.0)
+
+        state, rewards, done = init_new_episode(env, agent)
+        episode_reward += rewards
 
         while not done:
             action = agent.select_action(state)
