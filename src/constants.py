@@ -9,14 +9,14 @@ WINDOW_SIZE = 80  # We are using squared preprocessed images for the network, th
 NUM_ACTIONS = 3  # Number of actions the agent can take
 INPUT_SHAPE = (CHANNELS, WINDOW_SIZE, WINDOW_SIZE)  # PyTorch uses (channels, height, width) format
 
-LEARNING_RATE = 0.001  # TODO: Try decaying learning rate from 0.1 to 0.0005
+LEARNING_RATE = 0.001
 
 MIN_MEMORY_CAPACITY = 40_000  # This should be at least BATCH_SIZE
 MEMORY_CAPACITY = 750_000
 
-NUM_EPISODES = 2_500
-BATCH_SIZE = 32  # TODO: Maybe try 256?
-UPDATE_FREQUENCY = 5  # How often to update the target network, measured in episodes
+NUM_EPISODES = 4000
+BATCH_SIZE = 32
+UPDATE_FREQUENCY = 7  # How often to update the target network, measured in episodes
 
 GAMMA = 0.99
 EPSILON_MAX = 1.0
