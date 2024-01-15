@@ -53,8 +53,8 @@ def preprocess(frame: np.ndarray) -> np.ndarray:
     :param frame: the frame(state) image
     :return: the preprocessed image
     """
+    frame = rgb2gray(frame)
     frame = crop(frame)
     frame = resize(frame)
-    frame = rgb2gray(frame)
     frame = normalize(frame)
     return frame
