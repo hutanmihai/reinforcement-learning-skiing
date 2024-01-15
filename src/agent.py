@@ -19,6 +19,10 @@ from src.constants import (
 import numpy as np
 
 
+def clip_rewards(rewards):
+    return torch.clamp(rewards, -1.0, 0)
+
+
 class Agent:
     def __init__(self, action_space, algorithm: Literal["ddqn", "dqn"] | str):
         self.algorithm = algorithm
@@ -62,6 +66,8 @@ class Agent:
             return
 
         states, actions, rewards, dones, next_states = self.replay_memory.sample()
+
+        rewards = clip_rewards(rewards)
 
         if self.algorithm == "ddqn":
             # DDQN
