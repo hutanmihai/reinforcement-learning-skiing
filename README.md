@@ -1,5 +1,8 @@
 # reinforcement-learning-skiing
 
+## Documentation
+For the detailed explanation of the solution please read the [report](./documentation.pdf).
+
 ## Required libraries
 
 ```bash
