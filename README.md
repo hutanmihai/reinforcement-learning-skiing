@@ -1,9 +1,11 @@
 # reinforcement-learning-skiing
 
 ## Description
+Developed DQN and DDQN algorithms for OpenAI Gym Skiing environment. Showcased commitment to refining network architecture and preprocessing, addressing challenges in hyperparameter tuning. This project marked my initial venture into reinforcement learning implementations.
 
 The goal of the project was to implement and compare two algorithms for the Atari game Skiing: DQN and DDQN. The project
 was implemented in Python 3.11.5.
+
 You can run it by following the instructions described below, and see the documentation [here](#documentation).
 
 ## How to run the project
