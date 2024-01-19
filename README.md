@@ -1,4 +1,4 @@
-# reinforcement-learning-skiing
+# Reinforcement Learning - Atari Skiing
 
 [//]: # (## Author)
 
