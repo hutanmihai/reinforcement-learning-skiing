@@ -1,11 +1,15 @@
 # reinforcement-learning-skiing
 
-## Author
+[//]: # (## Author)
 
-- Hutan Mihai Alexandru
-- Github: [hutanmihai](https://github.com/hutanmihai)
-- LinkedIn: [Mihai-Alexandru Hutan](https://www.linkedin.com/in/hutanmihai/)
-- Portfolio: [mihaihutan.ro](https://mihaihutan.ro)
+[//]: # ()
+[//]: # (- Hutan Mihai Alexandru)
+
+[//]: # (- Github: [hutanmihai]&#40;https://github.com/hutanmihai&#41;)
+
+[//]: # (- LinkedIn: [Mihai-Alexandru Hutan]&#40;https://www.linkedin.com/in/hutanmihai/&#41;)
+
+[//]: # (- Portfolio: [mihaihutan.ro]&#40;https://mihaihutan.ro&#41;)
 
 ## Description
 
